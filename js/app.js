@@ -11,6 +11,10 @@ Book.prototype.getReadText = function() {
   return this.read ? "read" : "not read yet";
 }
 
+Book.prototype.toggleRead = function() {
+  this.read = !this.read;
+}
+
 // Add a few sample books
 myLibrary.push(new Book({
   title: "The Internet of Money",
@@ -30,6 +34,10 @@ function addBookToLibrary(book) {
   myLibrary.push(new Book(book));
 }
 
+function removeBook(bookId) {
+  myLibrary.splice(bookId, 1);
+}
+
 function handleNewBookSubmit(e) {
   e.preventDefault();
 
@@ -42,6 +50,17 @@ function handleNewBookSubmit(e) {
   };
 
   addBookToLibrary(bookParams);
+  render();
+}
+
+function handleRemoveBook(button) {
+  removeBook(button.dataset.bookId);
+  render();
+}
+
+function handleToggleRead(button) {
+  const book = myLibrary[button.dataset.bookId];
+  book.toggleRead();
   render();
 }
 
@@ -101,7 +120,10 @@ function renderTableRow(book, index) {
       <td>${book.author}</td>
       <td>${book.pages}</td>
       <td>${book.getReadText()}</td>
-      <td></td>
+      <td>
+        <button class="btn btn-success" data-book-id="${index}" onclick="handleToggleRead(this)">Toggle Read</button>
+        <button class="btn btn-danger" data-book-id="${index}" onclick="handleRemoveBook(this)">Remove</button>
+      </td>
     </tr>
   `;
 }
